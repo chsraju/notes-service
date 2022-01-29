@@ -1,3 +1,6 @@
+server:
+  servlet:
+    context-path: /Notes
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/notesdb
@@ -22,4 +25,3 @@ spring:
     enabled: true
     schemas: public
     locations: classpath:/db/migration
-
