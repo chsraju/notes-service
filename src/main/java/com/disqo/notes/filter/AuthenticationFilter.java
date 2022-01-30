@@ -60,8 +60,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		String email = getEmailToken(jwtToken);
 		User user = userRepository.findByEmail(email);
 		if (user == null) {
-			throw new ResourceNotFoundException("Token asociated with user not found");
+			throw new ResourceNotFoundException("Invalid Token");
 		}
+		log.info("Token is valid for the user: {}", user.getEmail());
 		AuthContext.setUserId(user.getUserId());
 
 		chain.doFilter(request, response);

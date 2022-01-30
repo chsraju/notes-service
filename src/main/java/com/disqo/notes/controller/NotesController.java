@@ -1,9 +1,10 @@
 package com.disqo.notes.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,11 @@ public class NotesController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getNotes() {
+        List<Note> notes = noteService.getNotes();
+        return ResponseEntity.ok(notes);
+    }
 
     @GetMapping("/{noteId}")
     public ResponseEntity<?> getNoteById(@PathVariable Long noteId) {
@@ -54,13 +60,7 @@ public class NotesController {
     @PutMapping("/{noteId}")
     public ResponseEntity<Note> updateNote(@PathVariable Long noteId, @Valid @RequestBody Note note) {
         log.info("Updating Note ID {} with Note data {}", noteId, note);
-
-        if (!noteId.equals(note.getNoteId())) {
-            String message = String.format("Id from URL [%s] doesn't match id from the entity [%s]",
-                            noteId, note.getNoteId());
-            throw new ResourceNotFoundException(message);
-        }
-
+        note.setNoteId(noteId);
         Note updateNote = noteService.updateNote(note);
         return new ResponseEntity<>(updateNote, HttpStatus.OK);
     }

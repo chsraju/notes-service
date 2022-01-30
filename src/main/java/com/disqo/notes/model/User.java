@@ -18,18 +18,14 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "user")
 @Setter
 @Getter
-@ToString
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
 	@Id

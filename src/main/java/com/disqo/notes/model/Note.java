@@ -18,25 +18,23 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "note")
 @Setter
 @Getter
-@ToString
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Note {
 
+	@Setter(onMethod = @__({ @JsonIgnore }))
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "note_id", nullable = false)
 	private Long noteId;
 
+	@JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_user_id"))
     private User user;
@@ -47,8 +45,8 @@ public class Note {
 	private String title;
 
 	@Size(max = 1000)
-	@Column(name = "note_descr")
-	private String noteDescription;
+	@Column(name = "description")
+	private String description;
 
 	@JsonIgnore
 	@Column(name = "created_time", insertable = false, updatable = false, nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

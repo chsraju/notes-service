@@ -1,12 +1,16 @@
 package com.disqo.notes.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.disqo.notes.filter.AuthContext;
 import com.disqo.notes.model.Note;
+import com.disqo.notes.model.User;
 import com.disqo.notes.repository.NoteRepository;
+import com.disqo.notes.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,8 +22,12 @@ public class NotesServiceImpl implements NotesService {
 	@Autowired
     private NoteRepository noteRepository;
 
+	@Autowired
+    private UserRepository userRepository;
+
     @Override
     public Note createNote(Note note) {
+    	note.setUser(userRepository.findById(AuthContext.getUserId()).get());
         noteRepository.save(note);
         return note;
     }
@@ -30,6 +38,7 @@ public class NotesServiceImpl implements NotesService {
         Note currentNote = noteRepository.findById(note.getNoteId())
                 .orElseThrow(() -> new ResourceNotFoundException("Note is not found for noteId: "+ note.getNoteId()));
         if (currentNote != null) {
+        	note.setUser(userRepository.findById(AuthContext.getUserId()).get());
             currentNote = noteRepository.save(note);
         }
         return currentNote;
@@ -44,6 +53,16 @@ public class NotesServiceImpl implements NotesService {
         	throw new ResourceNotFoundException("Note is not found for noteId for the passed user : "+noteId);
         }
         return note;
+
+    }
+
+    @Override
+    public List<Note> getNotes() {
+    	Long userId = AuthContext.getUserId();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Notes are not found for user: "+userId));
+
+        return user.getNotes();
 
     }
 
