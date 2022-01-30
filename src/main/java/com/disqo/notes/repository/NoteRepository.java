@@ -9,5 +9,4 @@ import com.disqo.notes.model.Note;
 
 @Repository
 public interface NoteRepository extends PagingAndSortingRepository<Note, Long>, JpaSpecificationExecutor<Note> {
-
 }

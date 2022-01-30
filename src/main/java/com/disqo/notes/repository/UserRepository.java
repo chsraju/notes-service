@@ -9,4 +9,5 @@ import com.disqo.notes.model.User;
 
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<User, Long>, JpaSpecificationExecutor<User> {
+	User findByEmailAndPassword(String email, String password);
 }

@@ -37,7 +37,7 @@ public class NotesServiceImpl implements NotesService {
     @Override
     public Note getNoteById(Long noteId) {
     	log.info(" Retriving the Notes for the id: {}", noteId);
-        Note note = noteRepository.findById((noteId))
+        Note note = noteRepository.findById(noteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Note is not found for noteId: "+noteId));
         return note;
 

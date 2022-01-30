@@ -46,7 +46,7 @@ public class NotesController {
 
 
     @GetMapping("/{noteId}")
-    public ResponseEntity<?> retrieveNote(@PathVariable Long noteId) {
+    public ResponseEntity<?> getNoteById(@PathVariable Long noteId) {
         log.info("Retrieving note with id: {}", noteId);
         return new ResponseEntity<>(noteService.getNoteById(noteId), HttpStatus.OK);
     }
