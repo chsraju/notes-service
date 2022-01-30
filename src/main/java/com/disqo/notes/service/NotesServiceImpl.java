@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.disqo.notes.filter.AuthContext;
 import com.disqo.notes.model.Note;
 import com.disqo.notes.repository.NoteRepository;
 
@@ -39,6 +40,9 @@ public class NotesServiceImpl implements NotesService {
     	log.info(" Retriving the Notes for the id: {}", noteId);
         Note note = noteRepository.findById(noteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Note is not found for noteId: "+noteId));
+        if(!note.getUser().getUserId().equals(AuthContext.getUserId())) {
+        	throw new ResourceNotFoundException("Note is not found for noteId for the passed user : "+noteId);
+        }
         return note;
 
     }
@@ -48,6 +52,9 @@ public class NotesServiceImpl implements NotesService {
     	log.info(" Deleting the Notes for the id: {}", noteId);
         Note note = noteRepository.findById((noteId))
                 .orElseThrow(() -> new ResourceNotFoundException("Note is not found for noteId: "+ noteId));
+        if(!note.getUser().getUserId().equals(AuthContext.getUserId())) {
+        	throw new ResourceNotFoundException("Note is not found for noteId for the passed user : "+noteId);
+        }
         if (note != null) {
             noteRepository.delete(note);
         }

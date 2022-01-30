@@ -2,17 +2,17 @@ package com.disqo.notes.filter;
 
 public class AuthContext {
 
-	private static ThreadLocal<String> userEmailInstance = new ThreadLocal<>();
+	private static ThreadLocal<Long> userIdInstance = new ThreadLocal<>();
 
-	public static void setEmail(String email) {
-		userEmailInstance.set(email);
+	public static void setUserId(Long userId) {
+		userIdInstance.set(userId);
 	}
 
-	public static String getEmail() {
-		return userEmailInstance.get();
+	public static Long getUserId() {
+		return userIdInstance.get();
 	}
 
-	public static void removeEmail() {
-		userEmailInstance.remove();
+	public static void removeUserId() {
+		userIdInstance.remove();
 	}
 }

@@ -10,11 +10,15 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.disqo.notes.model.User;
+import com.disqo.notes.repository.UserRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -25,10 +29,14 @@ import lombok.extern.slf4j.Slf4j;
 @WebFilter(urlPatterns = "/Notes/*")
 public class AuthenticationFilter extends OncePerRequestFilter {
 
+	private static final List<String> EXCLUDE_URLS = Arrays.asList("/token", "/health", "/actuator", "/swagger-ui",
+			"/swagger-resources", "/api-docs");
+
 	@Value("${jwt.secret}")
 	private String secret;
 
-	private static final List<String> EXCLUDE_URLS = Arrays.asList("/token", "/health", "/actuator", "/swagger-ui");
+	@Autowired
+	UserRepository userRepository;
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -50,12 +58,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		String email = getEmailToken(jwtToken);
-		if (!StringUtils.hasText(email)) {
-			throw new ResourceNotFoundException("Token is Empty");
+		User user = userRepository.findByEmail(email);
+		if (user == null) {
+			throw new ResourceNotFoundException("Token asociated with user not found");
 		}
-
-		AuthContext.setEmail(email);
-		log.info("Email: {}", email);
+		AuthContext.setUserId(user.getUserId());
 
 		chain.doFilter(request, response);
 	}
